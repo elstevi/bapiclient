@@ -1,10 +1,12 @@
 #!/usr/local/bin/python
-
-import os
+import ConfigParser
 import requests
 
-HOSTS = os.environ['HOSTS'].replace(' ', '').split(',')
-print $HOSTS
+config = Config = ConfigParser.ConfigParser()
+config.read('/usr/local/etc/bapiclient.conf')
+HOSTS = config.get('global', 'hosts').replace(' ', '').split(',')
+
+
 def get_all_vms():
     """ Returns a list of VM's that we can see """
     vms = []
@@ -29,11 +31,14 @@ def find_vm_host(vm_name):
 
 def get_vm_details(vm_name):
     """ Return a json dump of everything we know about a VM """
-    host = find_vm_host(vm_name)
-    url = "%s/vm/%s/dump" % (host, vm_name)
+    http_host = find_vm_host(vm_name)
+    host = http_host.split(':')[1].replace('/', '')
+    url = "%s/vm/%s/dump" % (http_host, vm_name)
     r = requests.get(url)
     rtrn = r.json()
     rtrn['websocket_port'] = '10' + rtrn['fbuf_port'][1:]
+    rtrn['http_host'] = http_host
+    rtrn['host'] = host
     return rtrn
 
 def vm_action(vm_name, action):
