@@ -36,7 +36,6 @@ def get_vm_details(vm_name):
     url = "%s/vm/%s/dump" % (http_host, vm_name)
     r = requests.get(url)
     rtrn = r.json()
-    rtrn['websocket_port'] = '10' + rtrn['fbuf_port'][1:]
     rtrn['http_host'] = http_host
     rtrn['host'] = host
     return rtrn
