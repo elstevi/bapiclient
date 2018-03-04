@@ -6,6 +6,18 @@ config = Config = ConfigParser.ConfigParser()
 config.read('/usr/local/etc/bapiclient.conf')
 HOSTS = config.get('global', 'hosts').replace(' ', '').split(',')
 
+def new_host(host, vmdata):
+    """ Create a new host """
+    if host not in HOSTS:
+        raise IOError("target host does not exist")
+
+    url = '%s/vm/' % host
+    r = requests.post(url, json=vmdata)
+    return r.json
+
+def get_hosts():
+    """ Return a list of hosts that bapiclient knows about """
+    return HOSTS
 
 def get_all_vms():
     """ Returns a list of VM's that we can see """
