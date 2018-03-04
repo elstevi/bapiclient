@@ -13,7 +13,7 @@ def new_host(host, vmdata):
 
     url = '%s/vm/' % host
     r = requests.post(url, json=vmdata)
-    return r.json
+    return r
 
 def get_hosts():
     """ Return a list of hosts that bapiclient knows about """
