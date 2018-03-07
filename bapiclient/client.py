@@ -3,7 +3,7 @@ import ConfigParser
 import requests
 
 config = Config = ConfigParser.ConfigParser()
-config.read('/usr/local/etc/bapiclient.conf')
+config.read('/persist/bapiclient.conf')
 HOSTS = config.get('global', 'hosts').replace(' ', '').split(',')
 
 def new_host(host, vmdata):
