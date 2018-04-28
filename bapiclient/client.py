@@ -9,7 +9,7 @@ HOSTS = config.get('global', 'hosts').replace(' ', '').split(',')
 def new_host(host, vmdata):
     """ Create a new host """
     if host not in HOSTS:
-        raise IOError("target host does not exist")
+        raise IOError('target host %s does not exist' % host)
 
     url = '%s/vm/' % host
     r = requests.post(url, json=vmdata)
@@ -18,6 +18,13 @@ def new_host(host, vmdata):
 def get_hosts():
     """ Return a list of hosts that bapiclient knows about """
     return HOSTS
+
+def edit_host(host, newvm):
+    """ Edit an existing host """
+    if host not in HOSTS:
+        raise IOError('target host %s does not exist' % host)
+    url = "%s/vm/%s" % (host, newvm['name'])
+    r = requests.patch(url, json=newvm)
 
 def get_all_vms():
     """ Returns a list of VM's that we can see """
@@ -43,12 +50,10 @@ def find_vm_host(vm_name):
 
 def get_vm_details(vm_name):
     """ Return a json dump of everything we know about a VM """
-    http_host = find_vm_host(vm_name)
-    host = http_host.split(':')[1].replace('/', '')
-    url = "%s/vm/%s/dump" % (http_host, vm_name)
+    host = find_vm_host(vm_name)
+    url = "%s/vm/%s/dump" % (host, vm_name)
     r = requests.get(url)
     rtrn = r.json()
-    rtrn['http_host'] = http_host
     rtrn['host'] = host
     return rtrn
 
